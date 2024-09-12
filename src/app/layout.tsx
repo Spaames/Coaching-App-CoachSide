@@ -1,5 +1,8 @@
-//will be rendered when the user visits the root of the application (/).
+'use client'; //for Chakra UI
+
 import React from "react";
+import { ChakraProvider } from "@chakra-ui/react";
+import theme from "../theme";
 
 export default function RootLayout(
     {
@@ -9,7 +12,11 @@ export default function RootLayout(
     }) {
     return (
         <html lang="en">
-        <body>{children}</body>
+            <body>
+                <ChakraProvider theme={theme}>
+                    {children}
+                </ChakraProvider>
+            </body>
         </html>
     )
 }
