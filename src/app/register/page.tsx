@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, FormEvent } from "react";
+import { useRouter } from "next/navigation";
 import {
     Box,
     Button,
@@ -26,12 +27,12 @@ export default function RegisterPage() {
     const [confirmPassword, setConfirmPassword] = useState("");
     const [pin, setPin] = useState("");
     const [error, setError] = useState("");
-
     // Hardcoded PIN for dev purposes, will be in the env file
     const REQUIRED_PIN = "1234";
+    const router = useRouter();
 
     // Handle form submission
-    const handleSubmit = (e: FormEvent) => {
+    const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
 
         if (password !== confirmPassword) {
@@ -47,6 +48,24 @@ export default function RegisterPage() {
         // Clear the error and proceed with registration logic
         setError("");
         console.log("Username:", username, "Password:", password, "PIN:", pin);
+
+        try {
+            const response = await fetch("/api/register", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ username, password }),
+            });
+
+            const data = await response.json();
+            if (response.ok) {
+                router.push("/");
+            } else {
+                setError(data.message);
+            }
+        } catch (error) {
+            console.log(error);
+            setError("Error during registration");
+        }
     };
 
     return (
