@@ -27,8 +27,6 @@ export default function Page() {
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
 
-        console.log("username", username, " password", password);
-
         try {
             const response = await fetch("/api/login", {
                 method: "POST",
@@ -38,8 +36,7 @@ export default function Page() {
 
             const data = await response.json();
             if (response.status === 200) {
-                localStorage.setItem("token", data.token);
-                router.push("/");
+                router.push("/home");
             } else {
                 setError(data.message);
             }
