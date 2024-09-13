@@ -1,17 +1,52 @@
 "use client";
 
-import {Box, Button, Flex, FormControl, FormLabel, Heading, Input, Link, Stack, Text} from "@chakra-ui/react";
+import {
+    Box,
+    Button,
+    Flex,
+    FormControl,
+    FormLabel,
+    Heading,
+    Input,
+    Link,
+    Stack,
+    Text,
+    Alert,
+    AlertIcon
+} from "@chakra-ui/react";
 import {FormEvent, useState} from "react";
 import NextLink from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function Page() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+    const [error, setError] = useState("");
+    const router = useRouter();
 
-    const handleSubmit = (e: FormEvent) => {
+    const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
 
         console.log("username", username, " password", password);
+
+        try {
+            const response = await fetch("/api/login", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ username, password }),
+            });
+
+            const data = await response.json();
+            if (response.status === 200) {
+                localStorage.setItem("token", data.token);
+                router.push("/");
+            } else {
+                setError(data.message);
+            }
+        } catch (error) {
+            console.log(error);
+            console.log("Error during login");
+        }
     };
 
     return (
@@ -29,6 +64,12 @@ export default function Page() {
                 </Box>
                 <form onSubmit={handleSubmit}>
                     <Stack spacing={4}>
+                        {error && (
+                            <Alert status="error" mb={4}>
+                                <AlertIcon />
+                                {error}
+                            </Alert>
+                        )}
                         <FormControl id="email" isRequired>
                             <FormLabel>Username</FormLabel>
                             <Input
