@@ -1,9 +1,12 @@
 'use client'
 import { Button, Flex, Box, Text } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
+import {useAppDispatch} from "@/app/redux/hooks";
+import {logout} from "@/app/redux/features/authSlice";
 
 export default function Page() {
     const router = useRouter();
+    const dispatch = useAppDispatch()
 
     const handleLogout = async () => {
         try {
@@ -12,6 +15,7 @@ export default function Page() {
             });
 
             if (response.ok) {
+                dispatch(logout());
                 router.push("/login");
             }
         } catch (error) {
