@@ -17,15 +17,12 @@ import {
 import {FormEvent, useState} from "react";
 import NextLink from "next/link";
 import { useRouter } from "next/navigation";
-import {useAppDispatch} from "@/app/redux/hooks";
-import {login} from "@/app/redux/features/authSlice";
 
 export default function Page() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
     const router = useRouter();
-    const dispatch = useAppDispatch();
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
@@ -39,8 +36,9 @@ export default function Page() {
 
             const data = await response.json();
             if (response.status === 200) {
-                dispatch(login());
-                router.push("/home");
+                console.log("ok");
+                localStorage.setItem("user", JSON.stringify(data.user));
+                router.replace("/home");
             } else {
                 setError(data.message);
             }

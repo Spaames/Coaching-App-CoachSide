@@ -1,11 +1,8 @@
-'use client'; //for Chakra UI
-
+"use client";
 import React from "react";
-import { ChakraProvider } from "@chakra-ui/react";
-import theme from "../theme";
-import Sidebar from "./components/Sidebar";
-import {Provider} from "react-redux";
-import { store } from "@/app/redux/store"
+import Navbar from "@/app/components/Navbar";
+import {ReduxProvider} from "@/app/redux/provider";
+import {ChakraProvider} from "@chakra-ui/react";
 
 export default function RootLayout(
     {
@@ -13,15 +10,16 @@ export default function RootLayout(
     }: {
         children: React.ReactNode
     }) {
+
     return (
         <html lang="en">
             <body>
-            <Provider store={store}>
-                <ChakraProvider theme={theme}>
-                    <Sidebar />
-                    {children}
-                </ChakraProvider>
-            </Provider>
+                <ReduxProvider>
+                    <ChakraProvider>
+                        <Navbar />
+                        {children}
+                    </ChakraProvider>
+                </ReduxProvider>
             </body>
         </html>
     )

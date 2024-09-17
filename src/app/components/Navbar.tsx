@@ -1,16 +1,28 @@
 'use client'
 import { Box, Flex, Icon, Link, Text } from "@chakra-ui/react";
 import { FaHome, FaInfoCircle, FaEnvelope } from "react-icons/fa";
-import {ReactNode, ElementType } from "react"
-import { useAppSelector } from "@/app/redux/hooks";
+import {ReactNode, ElementType, useEffect} from "react"
+import {usePathname} from "next/navigation";
+import { useAppSelector, useAppDispatch} from "@/app/redux/hooks";
+import {login, logout} from "@/app/redux/features/authSlice";
 
-export default function Sidebar() {
-
+export default function Navbar() {
     const isAuth = useAppSelector((state) => state.auth.isAuthenticated);
+    const dispatch = useAppDispatch();
+    const path = usePathname();
+    useEffect(() => {
+        const cachedUserString = localStorage.getItem("user");
+        if (cachedUserString) {
+            const user = JSON.parse(cachedUserString);
+            dispatch(login(user));
+        }
+        else {
+            dispatch(logout());
+        }
+    }, [dispatch, isAuth, path]);
 
-    if (!isAuth) {
-        return null;
-    }
+    if (!isAuth) return null;
+
 
     return (
         <Box
@@ -28,7 +40,7 @@ export default function Sidebar() {
                 ReMuscles
             </Text>
             <Flex direction="column" as="ul">
-                <NavItem icon={FaHome} href="/">
+                <NavItem icon={FaHome} href="/home">
                     Home
                 </NavItem>
                 <NavItem icon={FaInfoCircle} href="/about">
