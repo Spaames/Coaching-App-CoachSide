@@ -8,12 +8,16 @@ interface User {
 
 interface AuthState {
     isAuthenticated: boolean;
-    user: User | null;
+    user: User;
 }
 
 const initialState: AuthState = {
     isAuthenticated: false,
-    user: null,
+    user: {
+        username: 'N/A',
+        firstName: 'N/A',
+        lastName: 'N/A',
+    },
 };
 
 const authSlice = createSlice({
@@ -26,7 +30,11 @@ const authSlice = createSlice({
         },
         logout: (state) => {
             state.isAuthenticated = false;
-            state.user = null;
+            state.user = {
+                username: 'N/A',
+                firstName: 'N/A',
+                lastName: 'N/A',
+            };
         },
     },
 });
