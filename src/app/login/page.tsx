@@ -38,7 +38,7 @@ export default function Page() {
             if (response.status === 200) {
                 console.log("ok");
                 localStorage.setItem("user", JSON.stringify(data.user));
-                router.replace("/home");
+                router.push("/home");
             } else {
                 setError(data.message);
             }

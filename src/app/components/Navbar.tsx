@@ -3,7 +3,7 @@ import { FaHome, FaInfoCircle, FaEnvelope, FaBars } from "react-icons/fa";
 import { useEffect, ReactNode, ElementType, FormEvent } from "react";
 import { useAppSelector, useAppDispatch } from "@/app/redux/hooks";
 import { login, logout } from "@/app/redux/features/authSlice";
-import { useRouter } from "next/navigation";
+import {usePathname, useRouter} from "next/navigation";
 
 export default function Navbar() {
     const isAuth = useAppSelector((state) => state.auth.isAuthenticated);
@@ -11,6 +11,7 @@ export default function Navbar() {
     const dispatch = useAppDispatch();
     const router = useRouter();
     const { isOpen, onToggle } = useDisclosure();
+    const path = usePathname();
 
     useEffect(() => {
         const cachedUserString = localStorage.getItem("user");
@@ -20,7 +21,7 @@ export default function Navbar() {
         } else {
             dispatch(logout());
         }
-    }, [dispatch, isAuth]);
+    }, [dispatch, isAuth, path]);
 
     if (!isAuth) return null;
 

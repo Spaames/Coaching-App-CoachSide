@@ -4,6 +4,7 @@ import Navbar from "@/app/components/Navbar";
 import {ReduxProvider} from "@/app/redux/provider";
 import {ChakraProvider} from "@chakra-ui/react";
 import { Box } from "@chakra-ui/react";
+import {usePathname} from "next/navigation";
 
 export default function RootLayout(
     {
@@ -11,6 +12,9 @@ export default function RootLayout(
     }: {
         children: React.ReactNode
     }) {
+
+    const path = usePathname();
+    const showNavBar = path !== "/login" && path !== "/register";
 
     return (
         <html lang="en">
@@ -22,7 +26,7 @@ export default function RootLayout(
                 <ReduxProvider>
                     <ChakraProvider>
                         <Navbar />
-                        <Box as="main" ml={{ base: "0", md: "180px" }} p="4">
+                        <Box as="main" ml={showNavBar ? { base: "0", md: "180px" }: "0"} p="4">
                             {children}
                         </Box>
                     </ChakraProvider>
