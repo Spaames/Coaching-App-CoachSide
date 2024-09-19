@@ -1,9 +1,15 @@
 'use client'
 import { Button, Flex, Box, Text } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
+import {useAppDispatch, useAppSelector} from "@/app/redux/hooks";
+import {logout} from "@/app/redux/features/authSlice";
 
 export default function Page() {
     const router = useRouter();
+    const dispatch = useAppDispatch()
+
+    const isAuth = useAppSelector((state) => state.auth);
+    console.log(isAuth);
 
     const handleLogout = async () => {
         try {
@@ -12,6 +18,7 @@ export default function Page() {
             });
 
             if (response.ok) {
+                localStorage.removeItem("user");
                 router.push("/login");
             }
         } catch (error) {
@@ -20,13 +27,15 @@ export default function Page() {
     };
 
     return (
-        <Flex minHeight="100vh" align="center" justify="center" bg="gray.50">
-            <Box p={8} maxWidth="400px" borderWidth={1} borderRadius={8} boxShadow="lg" bg="white">
-                <Text>Welcome to the home page!</Text>
-                <Button colorScheme="red" onClick={handleLogout}>
-                    Logout
-                </Button>
-            </Box>
-        </Flex>
+        <>
+            <Flex minHeight="100vh" align="center" justify="center" bg="gray.50">
+                <Box p={8} maxWidth="400px" borderWidth={1} borderRadius={8} boxShadow="lg" bg="white">
+                    <Text>Welcome to the home page!</Text>
+                    <Button colorScheme="red" onClick={handleLogout}>
+                        Logout
+                    </Button>
+                </Box>
+            </Flex>
+        </>
     );
 }

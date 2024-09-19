@@ -24,6 +24,8 @@ export default function RegisterPage() {
     // State for form fields
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+    const [firstName, setFirstName] = useState("");
+    const [lastName, setLastName] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [pin, setPin] = useState("");
     const [error, setError] = useState("");
@@ -47,13 +49,12 @@ export default function RegisterPage() {
 
         // Clear the error and proceed with registration logic
         setError("");
-        console.log("Username:", username, "Password:", password, "PIN:", pin);
 
         try {
             const response = await fetch("/api/register", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ username, password }),
+                body: JSON.stringify({ username, firstName, lastName, password }),
             });
 
             const data = await response.json();
@@ -95,6 +96,22 @@ export default function RegisterPage() {
                                 type="text"
                                 value={username}
                                 onChange={(e) => setUsername(e.target.value)}
+                            />
+                        </FormControl>
+                        <FormControl id="firstName" isRequired>
+                            <FormLabel>First Name</FormLabel>
+                            <Input
+                                type="text"
+                                value={firstName}
+                                onChange={(e) => setFirstName(e.target.value)}
+                            />
+                        </FormControl>
+                        <FormControl id="lastName" isRequired>
+                            <FormLabel>Last Name</FormLabel>
+                            <Input
+                                type="text"
+                                value={lastName}
+                                onChange={(e) => setLastName(e.target.value)}
                             />
                         </FormControl>
                         <FormControl id="password" isRequired>

@@ -36,7 +36,9 @@ export default function Page() {
 
             const data = await response.json();
             if (response.status === 200) {
-                router.push("/home");
+                console.log("ok");
+                localStorage.setItem("user", JSON.stringify(data.user));
+                router.replace("/home");
             } else {
                 setError(data.message);
             }

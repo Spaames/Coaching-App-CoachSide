@@ -23,9 +23,18 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ message: "Invalid password" });
         }
 
-        const token = jwt.sign({ id:existingUser.id, username: existingUser.username }, process.env.JWT_SECRET as string, {expiresIn: "1h"});
+        const token = jwt.sign({
+            id:existingUser.id,
+            username: existingUser.username,
+        }, process.env.JWT_SECRET as string, {expiresIn: "1h"});
 
-        const response = NextResponse.json({ message: "User logged in" });
+        const user = {
+            username: existingUser.username,
+            firstName: existingUser.firstName,
+            lastName: existingUser.lastName,
+        }
+
+        const response = NextResponse.json({ message: "User logged in", user });
         response.cookies.set("authToken", token, {
             httpOnly: true,
             secure: false, //à changer en prod ou variable
@@ -35,9 +44,6 @@ export async function POST(req: NextRequest) {
         });
 
         return response;
-
-        //return NextResponse.json({ message: "User logged in", token});
-
 
     } catch (error) {
         console.error("Error during registration", error);
