@@ -9,22 +9,22 @@ import {
     TabPanels,
     Button,
     VStack,
-    Box
+    Box, HStack, Heading, NumberInput, NumberInputField
 } from "@chakra-ui/react";
-import Block from "@/app/components/Block";
+import Block from "@/app/components/block/Block";
 
 export default function Page({ params }: { params: { id: string } }) {
     const athlete = params.id;
-    const [blocks, setBlocks] = useState<number[]>([]);
+    const [sessions, setSessions] = useState<number[]>([]);
 
     // Fonction pour ajouter un nouveau bloc
-    const addBlock = () => {
-        setBlocks([...blocks, blocks.length + 1]);  // Ajoute un nouveau bloc avec un ID unique
+    const addSession = () => {
+        setSessions([...sessions, sessions.length + 1]);  // Ajoute un nouveau bloc avec un ID unique
     };
 
     // Fonction pour supprimer le dernier bloc
-    const removeBlock = () => {
-        setBlocks(blocks.slice(0, -1));  // Supprime le dernier bloc
+    const removeSession = () => {
+        setSessions(sessions.slice(0, -1));  // Supprime le dernier bloc
     };
 
     return (
@@ -36,13 +36,25 @@ export default function Page({ params }: { params: { id: string } }) {
             </TabList>
             <TabPanels>
                 <TabPanel>
-                    <VStack spacing={4} align="stretch">
+                    <VStack spacing={4} align="stretch" marginTop={5}>
+                        <Heading marginBottom={4} as="h4" size="md">
+                            <HStack spacing={4}>
+                                <span>Week</span>
+                                <NumberInput min={1} max={52} maxW={20}>
+                                    <NumberInputField/>
+                                </NumberInput>
+                                <span>To</span>
+                                <NumberInput min={1} max={52} maxW={20}>
+                                    <NumberInputField/>
+                                </NumberInput>
+                            </HStack>
+                        </Heading>
                         <Box>
-                            <Button colorScheme="teal" onClick={addBlock} mr={2}>Add Block</Button>
-                            <Button colorScheme="red" onClick={removeBlock} isDisabled={blocks.length === 0}>Remove Block</Button>
+                            <Button colorScheme="teal" onClick={addSession} mr={2}>Add Session</Button>
+                            <Button colorScheme="red" onClick={removeSession} isDisabled={sessions.length === 0}>Remove Session</Button>
                         </Box>
-                        {blocks.map((blockId) => (
-                            <Block key={blockId} athletes={athlete} />
+                        {sessions.map((sessionId) => (
+                            <Block key={sessionId} athletes={athlete} />
                         ))}
                     </VStack>
                 </TabPanel>

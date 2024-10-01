@@ -1,0 +1,36 @@
+{
+  "blockHead": [
+    "None",
+    "Type",
+    "Exercise",
+    "Sets x Reps",
+    "RPE",
+    "%1RM",
+    "RIR",
+    "TST",
+    "RPE Perceived",
+    "Load",
+    "Rest Time",
+    "Instructions"
+  ],
+  "exerciseType": [
+    "Muscle-Up",
+    "Pull-Up",
+    "Dips",
+    "Squat",
+    "Figure",
+    "Accessories"
+  ],
+  "rpe": [
+    "<@6,0",
+    "@6,0",
+    "@6,5",
+    "@7,0",
+    "@7,5",
+    "@8,0",
+    "@8,5",
+    "@9,0",
+    "@9,5",
+    "@10"
+  ]
+}
