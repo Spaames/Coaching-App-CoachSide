@@ -40,8 +40,6 @@ const DynamicInput: React.FC<DynamicInputProps> = ({selectedValue}) => {
                     <span>X</span>
                     <Input name="reps" id="reps" maxW={20} variant='outline' placeholder='Reps' />
                 </HStack>
-
-
             );
         case "rpe":
             return (
@@ -68,11 +66,7 @@ const DynamicInput: React.FC<DynamicInputProps> = ({selectedValue}) => {
             );
         case "rpe perceived":
             return (
-                <Select name="rpePerc" id="rpePerc" variant='outline'>
-                    {rpeValue.map((rpe, index) => (
-                        <option key={index} value={rpe}>{rpe}</option>
-                    ))}
-                </Select>
+                <Input name="rpePerc" id="rpePerc" variant="outline" placeholder='RPE perc' disabled />
             );
         case "load":
             return (

@@ -17,11 +17,12 @@ import data from "@/lib/data.json";
 import TableHead from "@/app/components/block/TableHead";
 import TableRow from "@/app/components/block/TableRow";
 
-interface BlockProps {
+interface SessionProps {
     athletes: string;
+    sessionId: number;
 }
 
-const Block: React.FC<BlockProps> = ({ athletes }) => {
+const Session: React.FC<SessionProps> = ({ athletes, sessionId }) => {
     const columns = data.blockHead;
     const [selectedColumns, setSelectedColumns] = useState<string[]>(columns.map(() => ''));
     const [rows, setRows] = useState<number[]>([]);
@@ -41,7 +42,7 @@ const Block: React.FC<BlockProps> = ({ athletes }) => {
     };
 
     return (
-        <Box overflow="auto" width="100%" marginBottom="25">
+        <Box overflow="auto" width="100%" marginBottom="25" id={`session-${sessionId}`}>
             <Box position='relative' padding='10'>
                 <Divider />
                 <AbsoluteCenter bg='white' px='4'>
@@ -87,4 +88,4 @@ const Block: React.FC<BlockProps> = ({ athletes }) => {
     );
 };
 
-export default Block;
+export default Session;

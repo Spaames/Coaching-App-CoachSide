@@ -11,18 +11,16 @@ import {
     VStack,
     Box, HStack, Heading, NumberInput, NumberInputField
 } from "@chakra-ui/react";
-import Block from "@/app/components/block/Block";
+import Session from "@/app/components/block/Session";
 
 export default function Page({ params }: { params: { id: string } }) {
     const athlete = params.id;
     const [sessions, setSessions] = useState<number[]>([]);
 
-    // Fonction pour ajouter un nouveau bloc
     const addSession = () => {
         setSessions([...sessions, sessions.length + 1]);  // Ajoute un nouveau bloc avec un ID unique
     };
 
-    // Fonction pour supprimer le dernier bloc
     const removeSession = () => {
         setSessions(sessions.slice(0, -1));  // Supprime le dernier bloc
     };
@@ -54,7 +52,7 @@ export default function Page({ params }: { params: { id: string } }) {
                             <Button colorScheme="red" onClick={removeSession} isDisabled={sessions.length === 0}>Remove Session</Button>
                         </Box>
                         {sessions.map((sessionId) => (
-                            <Block key={sessionId} athletes={athlete} />
+                            <Session key={sessionId} sessionId={sessionId} athletes={athlete} />
                         ))}
                     </VStack>
                 </TabPanel>
