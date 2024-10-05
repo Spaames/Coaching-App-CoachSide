@@ -11,7 +11,7 @@ import {
     Button,
     HStack,
     Divider,
-    AbsoluteCenter, Stack, Select,
+    AbsoluteCenter, Stack, Select, Heading,
 } from "@chakra-ui/react";
 import data from "@/lib/data.json";
 import TableHead from "@/app/components/block/TableHead";
@@ -20,9 +20,11 @@ import TableRow from "@/app/components/block/TableRow";
 interface SessionProps {
     athletes: string;
     sessionId: number;
+    day: string;
+    week: number;
 }
 
-const Session: React.FC<SessionProps> = ({ athletes, sessionId }) => {
+const Session: React.FC<SessionProps> = ({ athletes, sessionId, day, week }) => {
     const columns = data.blockHead;
     const [selectedColumns, setSelectedColumns] = useState<string[]>(columns.map(() => ''));
     const [rows, setRows] = useState<number[]>([]);
@@ -42,28 +44,14 @@ const Session: React.FC<SessionProps> = ({ athletes, sessionId }) => {
     };
 
     return (
-        <Box overflow="auto" width="100%" marginBottom="25" id={`session-${sessionId}`}>
-            <Box position='relative' padding='10'>
-                <Divider />
-                <AbsoluteCenter bg='white' px='4'>
-                    <Stack spacing={2}>
-                        <Select variant="filled" whiteSpace="nowrap" minWidth="auto">
-                            <option key="1" value="Monday">Monday</option>
-                            <option key="2" value="Tuesday">Tuesday</option>
-                            <option key="3" value="Wednesday">Wednesday</option>
-                            <option key="4" value="Thursday">Thursday</option>
-                            <option key="5" value="Friday">Friday</option>
-                            <option key="6" value="Saturday">Saturday</option>
-                            <option key="7" value="Sunday">Sunday</option>
-                        </Select>
-                    </Stack>
-                </AbsoluteCenter>
-            </Box>
+        <Box overflow="auto" width="100%" marginBottom="25" id={`session-${day}-${week}`}>
             <HStack marginBottom={4}>
-                <Button colorScheme="teal" onClick={addRow}>Add Exercise</Button>
-                <Button colorScheme="red" onClick={removeRow} isDisabled={rows.length === 0}>Remove Exercise</Button>
+                <Button colorScheme="teal" onClick={addRow}>+</Button>
+                <Button colorScheme="red" onClick={removeRow} isDisabled={rows.length === 0}>-</Button>
             </HStack>
-
+            <Heading as='h4' size='md'>
+                {day} - Week : {week}
+            </Heading>
             <Table size="sm" minWidth="max-content">
                 <Thead>
                     <Tr>
