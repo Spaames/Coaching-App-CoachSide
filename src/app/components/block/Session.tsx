@@ -20,7 +20,7 @@ import TableRow from "@/app/components/block/TableRow";
 interface SessionProps {
     athletes: string;
     sessionId: number;
-    day: string;
+    day: number;
     week: number;
 }
 
@@ -68,7 +68,7 @@ const Session: React.FC<SessionProps> = ({ athletes, sessionId, day, week }) => 
                 </Thead>
                 <Tbody>
                     {rows.map((rowId) => (
-                        <TableRow key={rowId} selectedColumns={selectedColumns} />
+                        <TableRow key={rowId} selectedColumns={selectedColumns} rowId={rowId} day={day} week={week} />
                     ))}
                 </Tbody>
             </Table>
