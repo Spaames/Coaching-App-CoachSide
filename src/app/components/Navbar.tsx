@@ -16,8 +16,22 @@ export default function Navbar() {
     useEffect(() => {
         const cachedUserString = localStorage.getItem("user");
         if (cachedUserString) {
-            const user = JSON.parse(cachedUserString);
-            dispatch(login(user));
+            try {
+                const user = JSON.parse(cachedUserString).split("-");
+                if (!user || user[0] === undefined || user[0] === "") {
+                    dispatch(logout());
+                } else {
+                    const userConnected = {
+                        username: user[0],
+                        firstName: user[1],
+                        lastName: user[2],
+                    }
+                    dispatch(login(userConnected));
+                }
+            } catch (error) {
+                console.log(error);
+                dispatch(logout());
+            }
         } else {
             dispatch(logout());
         }

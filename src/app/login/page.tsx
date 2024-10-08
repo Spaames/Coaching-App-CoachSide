@@ -17,36 +17,25 @@ import {
 import {FormEvent, useState} from "react";
 import NextLink from "next/link";
 import { useRouter } from "next/navigation";
+import { useAppSelector, useAppDispatch } from "@/app/redux/hooks";
+import { loginAPI } from "@/app/redux/features/authSlice"
 
 export default function Page() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
-    const [error, setError] = useState("");
+    const dispatch = useAppDispatch();
     const router = useRouter();
+
+    const { error, loading, isAuthenticated} = useAppSelector((state) => state.auth)
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
-
-        try {
-            const response = await fetch("/api/login", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ username, password }),
-            });
-
-            const data = await response.json();
-            if (response.status === 200) {
-                console.log("ok");
-                localStorage.setItem("user", JSON.stringify(data.user));
-                router.push("/home");
-            } else {
-                setError(data.message);
-            }
-        } catch (error) {
-            console.log(error);
-            console.log("Error during login");
-        }
+        dispatch(loginAPI(username, password));
     };
+
+    if (isAuthenticated) {
+        router.push("/home");
+    }
 
     return (
         <Flex minHeight="100vh" align="center" justify="center" bg="gray.50">
@@ -89,6 +78,7 @@ export default function Page() {
                             colorScheme="teal"
                             type="submit"
                             width="full"
+                            isLoading={loading}
                         >
                             Login
                         </Button>

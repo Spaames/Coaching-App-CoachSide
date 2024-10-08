@@ -10,7 +10,6 @@ import {
 } from '@chakra-ui/react';
 import HomeAthleteRow from "@/app/components/HomeAthleteRow";
 import {useEffect, useState} from "react";
-import {useAppSelector} from "@/app/redux/hooks";
 
 export default function Page() {
 
@@ -24,37 +23,42 @@ export default function Page() {
 
     const [athletes, setAthletes] = useState<Athlete[]>([]);
     const [username, setUsername] = useState<string>("");
-    //const username = useAppSelector(state => state.auth.user.username);
-
 
     useEffect(() => {
         const storedUser = localStorage.getItem('user');
         if (storedUser) {
-            const user = JSON.parse(storedUser);
-            setUsername(user.username);
+            try {
+                const user = JSON.parse(storedUser).split("-");
+                if (!user || user[0] === undefined || user[0] === "") {
+                    console.error("Invalid data in localStorage");
+                } else {
+                    setUsername(user[0]);
+                    const fetchAthletes = async (username: string) => {
+                        try {
+                            const response = await fetch('/api/home', {
+                                method: "POST",
+                                headers: {
+                                    "Content-Type": "application/json",
+                                },
+                                body: JSON.stringify({username}),
+                            });
 
-            const fetchAthletes = async (username: string) => {
-                try {
-                    const response = await fetch('/api/home', {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                        body: JSON.stringify({ username }),
-                    });
-
-                    const data = await response.json();
-                    if (response.ok && data.athleteList) {
-                        setAthletes(data.athleteList);
-                    }
-                } catch (error) {
-                    console.log(error);
-                    setAthletes([]);
+                            const data = await response.json();
+                            if (response.ok && data.athleteList) {
+                                setAthletes(data.athleteList);
+                            }
+                        } catch (error) {
+                            console.log(error);
+                            setAthletes([]);
+                        }
+                    };
+                    fetchAthletes(username);
                 }
-            };
-            fetchAthletes(user.username);
+            } catch (error) {
+                console.error(error);
+            }
         }
-    }, []);
+    }, [username,]);
 
     return (
         <TableContainer>
