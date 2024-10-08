@@ -15,10 +15,10 @@ export async function POST(req: NextRequest) {
 
         const result = await collection.insertOne(block);
 
-        return NextResponse.json({ message: "Sessions saved" }, {status: 200});
+        return NextResponse.json({ message: "Block Saved" }, {status: 200});
 
     } catch (e) {
         console.log(e);
-        return NextResponse.json({ message: "Failed to save exercises", status: 500 });
+        return NextResponse.json({ message: "Failed to save Block", status: 500 });
     }
 }
