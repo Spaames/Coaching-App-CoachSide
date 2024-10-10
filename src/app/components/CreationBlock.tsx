@@ -17,26 +17,23 @@ import {
     NumberInputField,
     Select,
     Stack,
-    Tab,
-    TabList,
-    TabPanel,
-    TabPanels,
-    Tabs,
     VStack,
 } from "@chakra-ui/react";
 import Session from "@/app/components/block/Session";
-import { useAppDispatch } from "@/app/redux/hooks";
-import { createBlockThunk } from "@/app/redux/features/blockSlice";
+import {useAppDispatch} from "@/app/redux/hooks";
+import {createBlockThunk} from "@/app/redux/features/blockSlice";
+
+interface Intensity {
+    type?: string | null;
+    value?: number | null;
+}
 
 interface Exercise {
     type?: string;
     name?: string;
     sets?: number;
     reps?: number;
-    rpe?: string;
-    percentage?: number;
-    rir?: number;
-    tst?: string;
+    intensity?: Intensity | null;
     load?: number;
     rest?: string;
     instructions?: string;
@@ -44,6 +41,7 @@ interface Exercise {
     week: number;
     order: number;
 }
+
 interface Block {
     name: string;
     start?: string;
@@ -92,6 +90,21 @@ const CreationBlock: React.FC<CreationBlockProps> = ({ athlete }) => {
         setSessions(newSession);
     }
 
+    const getIntensity = (rowId: string, day: string, week: string): Intensity | null => {
+        const typeElement = document.getElementById("intensityType-" + rowId + "-" + day + "-" + week) as HTMLSelectElement | null;
+        const valueElement = document.getElementById("intensityValue-" + rowId + "-" + day + "-" + week) as HTMLInputElement | null;
+
+        if (typeElement && valueElement) {
+            return {
+                type: typeElement.value,
+                value: parseInt(valueElement.value)
+            };
+        } else {
+            return null;
+        }
+
+    }
+
     const handleCreationExercises = (): Exercise[] => {
         onClose();
 
@@ -124,18 +137,6 @@ const CreationBlock: React.FC<CreationBlockProps> = ({ athlete }) => {
                     case "reps":
                         exercise.reps = parseInt(value);
                         break;
-                    case "rpe":
-                        exercise.rpe = value;
-                        break;
-                    case "%1rm":
-                        exercise.percentage = parseInt(value);
-                        break;
-                    case "rir":
-                        exercise.rir = parseInt(value);
-                        break;
-                    case "tst":
-                        exercise.tst = value;
-                        break;
                     case "load":
                         exercise.load = parseInt(value);
                         break;
@@ -144,6 +145,10 @@ const CreationBlock: React.FC<CreationBlockProps> = ({ athlete }) => {
                         break;
                     case "instructions":
                         exercise.instructions = value;
+                        break;
+                    case "intensityType":
+                    case "intensityValue":
+                        exercise.intensity = getIntensity(order, day, week);
                         break;
                     default:
                         break;
@@ -166,6 +171,7 @@ const CreationBlock: React.FC<CreationBlockProps> = ({ athlete }) => {
         exercises.shift();
         return exercises;
     };
+
 
     const handleSave = () => {
         const exercises: Exercise[] = handleCreationExercises();

@@ -1,15 +1,17 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { AppThunk } from "@/app/redux/store";
 
+interface Intensity {
+    type?: string | null;
+    value?: number | null;
+}
+
 interface Exercise {
     type?: string;
     name?: string;
     sets?: number;
     reps?: number;
-    rpe?: string;
-    percentage?: number;
-    rir?: number;
-    tst?: string;
+    intensity?: Intensity | null;
     load?: number;
     rest?: string;
     instructions?: string;
@@ -18,22 +20,22 @@ interface Exercise {
     order: number;
 }
 
-interface BlockState {
+interface Block {
     name: string;
-    start: string;
-    end: string;
+    start?: string;
+    end?: string;
     athlete: string;
     exercises: Exercise[];
+}
+
+interface BlockState {
+    blocks: Block[];
     loading: boolean;
     error: string | null;
 }
 
 const initialState: BlockState = {
-    name: "",
-    start: "",
-    end: "",
-    athlete: "",
-    exercises: [],
+    blocks: [],
     loading: false,
     error: null,
 }
@@ -45,25 +47,39 @@ const blockSlice = createSlice({
         createBlockStart(state) {
             state.loading = true;
         },
-        createBlockSuccess(state, action: PayloadAction<{
-            name: string; start: string; end: string; athlete: string; exercises: Exercise[];
-        }>) {
-            state.name = action.payload.name;
-            state.start = action.payload.start;
-            state.end = action.payload.end;
-            state.athlete = action.payload.athlete;
-            state.exercises = action.payload.exercises;
+        getBlocksStart(state) {
             state.loading = true;
+        },
+        createBlockSuccess(state, action: PayloadAction<Block>) {
+            state.blocks.push(action.payload);
+            state.loading = false;
             state.error = null;
         },
+        getBlocksSuccess(state, action: PayloadAction<Block[]>) {
+            state.error = null;
+            state.loading = false;
+            state.blocks = action.payload;
+
+        },
         createBlockFailure(state, action: PayloadAction<string>) {
+            state.loading = false;
+            state.error = action.payload;
+        },
+        getBlocksFailure(state, action: PayloadAction<string>) {
             state.loading = false;
             state.error = action.payload;
         },
     },
 });
 
-export const { createBlockStart, createBlockSuccess, createBlockFailure } = blockSlice.actions;
+export const {
+    createBlockStart,
+    createBlockSuccess,
+    createBlockFailure,
+    getBlocksStart,
+    getBlocksSuccess,
+    getBlocksFailure,
+} = blockSlice.actions;
 
 export const createBlockThunk = ({ name, athlete, exercises }: { name: string; athlete: string; exercises: Exercise[] }): AppThunk => async (dispatch) => {
     dispatch(createBlockStart());
@@ -74,7 +90,7 @@ export const createBlockThunk = ({ name, athlete, exercises }: { name: string; a
     const end = `${Math.max(...weeks)}-${currentYear}`;
 
     try {
-        const response = await fetch("/api/saveBlock", {
+        const response = await fetch("/api/createBlock", {
             method: "POST",
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ name: name, start, end, athlete, exercises }),
@@ -90,5 +106,26 @@ export const createBlockThunk = ({ name, athlete, exercises }: { name: string; a
         dispatch(createBlockFailure("Error while saving block"));
     }
 };
+
+export const getBlocksThunk = (athlete: string): AppThunk => async (dispatch) => {
+    dispatch(getBlocksStart());
+
+    try {
+        const response = await fetch("/api/getBlocks", {
+            method: "POST",
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ athlete }),
+        });
+
+        const data = await response.json();
+        if (response.ok) {
+            dispatch(getBlocksSuccess(data.blockList));
+        } else {
+            dispatch(createBlockFailure(data.message));
+        }
+    } catch (error) {
+        dispatch(getBlocksFailure("Error while fetching Blocks"));
+    }
+}
 
 export default blockSlice.reducer;

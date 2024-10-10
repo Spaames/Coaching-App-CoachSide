@@ -11,7 +11,7 @@ export async function POST(req: NextRequest) {
 
         const mongoClient = await mongoClientPromise;
         const db = mongoClient.db("rmManagerDev");
-        const collection = db.collection("block");
+        const collection = db.collection("blocks");
 
         const result = await collection.insertOne(block);
 

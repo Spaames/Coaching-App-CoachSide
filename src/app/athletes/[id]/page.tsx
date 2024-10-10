@@ -2,16 +2,14 @@
 
 import React from 'react';
 import {
-
     Tab,
     TabList,
     TabPanel,
     TabPanels,
     Tabs,
 } from "@chakra-ui/react";
-import CreationBlock from "@/app/components/block/CreationBlock";
-
-
+import CreationBlock from "@/app/components/CreationBlock";
+import ViewBlocks from "@/app/components/ViewBlocks";
 
 export default function Page({ params }: { params: { id: string } }) {
     const athlete = params.id;
@@ -26,7 +24,7 @@ export default function Page({ params }: { params: { id: string } }) {
             </TabList>
             <TabPanels>
                 <TabPanel>
-                    one !
+                    <ViewBlocks athlete={athlete} />
                 </TabPanel>
                 <TabPanel>
                     <CreationBlock athlete={athlete} />

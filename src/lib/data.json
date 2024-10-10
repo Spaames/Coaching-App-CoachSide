@@ -1,5 +1,5 @@
 {
-  "blockHead": [
+  "blockHeadOld": [
     "None",
     "Type",
     "Exercise",
@@ -11,6 +11,20 @@
     "Load",
     "Rest Time",
     "Instructions"
+  ],
+  "blockHead": [
+    "Type",
+    "Exercise",
+    "Sets x Reps",
+    "Intensity",
+    "Load",
+    "Rest Time",
+    "Instructions"
+  ],
+  "intensity": [
+    "RPE",
+    "RIR",
+    "%1RM"
   ],
   "exerciseType": [
     "Muscle-Up",
