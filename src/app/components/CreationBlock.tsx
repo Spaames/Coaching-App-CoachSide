@@ -22,33 +22,7 @@ import {
 import Session from "@/app/components/block/Session";
 import {useAppDispatch} from "@/app/redux/hooks";
 import {createBlockThunk} from "@/app/redux/features/blockSlice";
-
-interface Intensity {
-    type?: string | null;
-    value?: number | null;
-}
-
-interface Exercise {
-    type?: string;
-    name?: string;
-    sets?: number;
-    reps?: number;
-    intensity?: Intensity | null;
-    load?: number;
-    rest?: string;
-    instructions?: string;
-    day: number;
-    week: number;
-    order: number;
-}
-
-interface Block {
-    name: string;
-    start?: string;
-    end?: string;
-    athlete: string;
-    exercises: Exercise[];
-}
+import { Intensity, Exercise, Block } from "@/app/redux/features/blockSlice"
 
 interface CreationBlockProps {
     athlete: string;

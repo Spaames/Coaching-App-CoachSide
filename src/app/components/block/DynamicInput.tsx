@@ -1,9 +1,7 @@
 import {
     Select,
-    Input, NumberInput, NumberInputField,
-    NumberIncrementStepper,
-    NumberDecrementStepper,
-    NumberInputStepper, HStack,
+    Input,
+    HStack,
 } from "@chakra-ui/react";
 import data from "@/lib/data.json"
 

@@ -12,5 +12,5 @@ export function middleware(req: NextRequest) {
 }
 
 export const config = {
-    matcher: ["/", "/home", "/athletes/:path*"],
+    matcher: ["/", "/home", "/athletes/:path*", "/view-block/:path*"],
 }

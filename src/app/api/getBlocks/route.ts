@@ -21,7 +21,7 @@ export async function POST(req: NextRequest) {
         }
 
         const blockList = (await fetchList).map(item => ({
-            _id: item.id,
+            id: item.id,
             name: item.name,
             start: item.start,
             end: item.end,

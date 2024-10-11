@@ -1,12 +1,13 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { AppThunk } from "@/app/redux/store";
+import { v4 as uuidv4 } from 'uuid';
 
-interface Intensity {
+export interface Intensity {
     type?: string | null;
     value?: number | null;
 }
 
-interface Exercise {
+export interface Exercise {
     type?: string;
     name?: string;
     sets?: number;
@@ -20,7 +21,8 @@ interface Exercise {
     order: number;
 }
 
-interface Block {
+export interface Block {
+    id?: string;
     name: string;
     start?: string;
     end?: string;
@@ -50,6 +52,9 @@ const blockSlice = createSlice({
         getBlocksStart(state) {
             state.loading = true;
         },
+        updateBlockStart(state) {
+            state.loading = true;
+        },
         createBlockSuccess(state, action: PayloadAction<Block>) {
             state.blocks.push(action.payload);
             state.loading = false;
@@ -61,6 +66,14 @@ const blockSlice = createSlice({
             state.blocks = action.payload;
 
         },
+        updateBlockSuccess(state, action: PayloadAction<Block>) {
+            const index = state.blocks.findIndex(block => block.id === action.payload.id);
+            if (index != -1) {
+                state.blocks[index] = action.payload;
+            }
+            state.loading = false;
+            state.error = null;
+        },
         createBlockFailure(state, action: PayloadAction<string>) {
             state.loading = false;
             state.error = action.payload;
@@ -69,6 +82,10 @@ const blockSlice = createSlice({
             state.loading = false;
             state.error = action.payload;
         },
+        updateBlockFailure(state, action: PayloadAction<string>) {
+            state.loading = false;
+            state.error = action.payload;
+        }
     },
 });
 
@@ -79,6 +96,9 @@ export const {
     getBlocksStart,
     getBlocksSuccess,
     getBlocksFailure,
+    updateBlockStart,
+    updateBlockSuccess,
+    updateBlockFailure,
 } = blockSlice.actions;
 
 export const createBlockThunk = ({ name, athlete, exercises }: { name: string; athlete: string; exercises: Exercise[] }): AppThunk => async (dispatch) => {
@@ -88,17 +108,18 @@ export const createBlockThunk = ({ name, athlete, exercises }: { name: string; a
     const currentYear = new Date().getFullYear();
     const start = `${Math.min(...weeks)}-${currentYear}`;
     const end = `${Math.max(...weeks)}-${currentYear}`;
+    const id = uuidv4();
 
     try {
         const response = await fetch("/api/createBlock", {
             method: "POST",
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name: name, start, end, athlete, exercises }),
+            body: JSON.stringify({ id, name: name, start, end, athlete, exercises }),
         });
 
         const data = await response.json();
         if (response.ok) {
-            dispatch(createBlockSuccess({ name: name, start, end, athlete, exercises }));
+            dispatch(createBlockSuccess({ id, name: name, start, end, athlete, exercises }));
         } else {
             dispatch(createBlockFailure(data.message));
         }
@@ -126,6 +147,28 @@ export const getBlocksThunk = (athlete: string): AppThunk => async (dispatch) =>
     } catch (error) {
         dispatch(getBlocksFailure("Error while fetching Blocks"));
     }
-}
+};
+
+export const updateBlockThunk = (updatedBlock: Block): AppThunk => async (dispatch) => {
+    dispatch(updateBlockStart());
+
+    try {
+        const response = await fetch("/api/updateBlock", {
+            method: "PUT",
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(updatedBlock),
+        });
+
+        const data = await response.json();
+        if (response.ok) {
+            dispatch(updateBlockSuccess(updatedBlock));
+            console.log(data.message);
+        } else {
+            dispatch(createBlockFailure(data.message));
+        }
+    } catch (error) {
+        dispatch(updateBlockFailure("Error while updating block"));
+    }
+};
 
 export default blockSlice.reducer;
