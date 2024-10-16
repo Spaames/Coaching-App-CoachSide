@@ -41,7 +41,8 @@ export default function Page({ params }: { params: { id: string } }) {
         const updatedExercise = { ...newExercises[exerciseIndex] };  // Crée une copie de l'exercice à modifier
 
         // Gérer les conversions pour les valeurs numériques
-        if (field === "sets" || field === "reps" || field === "load") {
+        if (field === "sets" || field === "indicatedReps" || field === "indicatedLoad" +
+            "") {
             updatedExercise[field] = parseInt(e.target.value, 10) as Exercise[K];
         } else {
             updatedExercise[field] = e.target.value as Exercise[K];
@@ -114,7 +115,8 @@ export default function Page({ params }: { params: { id: string } }) {
                                             <Tr>
                                                 <Th>Type</Th>
                                                 <Th>Exercise</Th>
-                                                <Th>Sets x Reps</Th>
+                                                <Th>Sets</Th>
+                                                <Th>Reps</Th>
                                                 <Th>Intensity</Th>
                                                 <Th>Load</Th>
                                                 <Th>Rest Time</Th>
@@ -146,6 +148,13 @@ export default function Page({ params }: { params: { id: string } }) {
                                                         />
                                                     </Td>
                                                     <Td>
+                                                        <Input
+                                                            defaultValue={exercise.indicatedReps?.toString() || ""}
+                                                            isReadOnly={!isEditing}
+                                                            onChange={(e) => handleInputChange(e, exerciseIndex, "indicatedReps")}
+                                                        />
+                                                    </Td>
+                                                    <Td>
                                                         <Select
                                                             defaultValue={exercise.intensity?.type || ""}
                                                             isReadOnly={!isEditing}
@@ -157,9 +166,9 @@ export default function Page({ params }: { params: { id: string } }) {
                                                     </Td>
                                                     <Td>
                                                         <Input
-                                                            defaultValue={exercise.load?.toString() || "N/A"}
+                                                            defaultValue={exercise.indicatedLoad?.toString() || "N/A"}
                                                             isReadOnly={!isEditing}
-                                                            onChange={(e) => handleInputChange(e, exerciseIndex, "load")}
+                                                            onChange={(e) => handleInputChange(e, exerciseIndex, "indicatedLoad")}
                                                         />
                                                     </Td>
                                                     <Td>

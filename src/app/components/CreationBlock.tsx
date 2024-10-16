@@ -96,6 +96,7 @@ const CreationBlock: React.FC<CreationBlockProps> = ({ athlete }) => {
                     order: parseInt(order),
                     day: parseInt(day),
                     week: parseInt(week),
+                    realPerf: null,
                 };
 
                 switch (header) {
@@ -109,10 +110,10 @@ const CreationBlock: React.FC<CreationBlockProps> = ({ athlete }) => {
                         exercise.sets = parseInt(value);
                         break;
                     case "reps":
-                        exercise.reps = parseInt(value);
+                        exercise.indicatedReps = value;
                         break;
                     case "load":
-                        exercise.load = parseInt(value);
+                        exercise.indicatedLoad = value;
                         break;
                     case "rest":
                         exercise.rest = value;

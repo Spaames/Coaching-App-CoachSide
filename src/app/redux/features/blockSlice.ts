@@ -7,13 +7,21 @@ export interface Intensity {
     value?: number | null;
 }
 
+export interface Perf {
+    set: number;
+    reps: number;
+    load: number;
+    notes: string;
+}
+
 export interface Exercise {
     type?: string;
     name?: string;
     sets?: number;
-    reps?: number;
+    indicatedReps?: string;
     intensity?: Intensity | null;
-    load?: number;
+    indicatedLoad?: string;
+    realPerf: Perf | null;
     rest?: string;
     instructions?: string;
     day: number;
