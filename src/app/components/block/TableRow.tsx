@@ -58,7 +58,7 @@ const TableRow: React.FC<TableRowProps> = ({ day, week, rowId }) => {
                 <Input name="rest" id={"rest-" + rowId +"-" + day + "-" + week} maxW={20} variant='outline' placeholder='Rest Time' />
             </Td>
             <Td>
-                <Input name="instruction" id={"instruction-" + rowId +"-" + day + "-" + week} variant='outline' placeholder='Instructions' />
+                <Input name="instructions" id={"instructions-" + rowId +"-" + day + "-" + week} variant='outline' placeholder='Instructions' />
             </Td>
         </Tr>
     )
