@@ -17,6 +17,8 @@ export interface Perf {
 export interface Exercise {
     type?: string;
     name?: string;
+    primaryMuscle?: string;
+    secondaryMuscle?: string;
     sets?: number;
     indicatedReps?: string;
     intensity?: Intensity | null;

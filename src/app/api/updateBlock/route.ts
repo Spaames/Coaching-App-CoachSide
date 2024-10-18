@@ -29,6 +29,8 @@ export async function PUT(req: NextRequest) {
             return NextResponse.json({ message: "Block not found" }, { status: 404 });
         }
 
+        console.log(result);
+
         return NextResponse.json({ message: "Block updated successfully" }, { status: 200 });
 
     } catch (e) {

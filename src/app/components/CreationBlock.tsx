@@ -106,6 +106,12 @@ const CreationBlock: React.FC<CreationBlockProps> = ({ athlete }) => {
                     case "exercise":
                         exercise.name = value;
                         break;
+                    case "primaryMuscle":
+                        exercise.primaryMuscle = value;
+                        break;
+                    case "secondaryMuscle":
+                        exercise.secondaryMuscle = value;
+                        break;
                     case "sets":
                         exercise.sets = parseInt(value);
                         break;

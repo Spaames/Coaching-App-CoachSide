@@ -1,4 +1,4 @@
-import {Tr, Td, Select, Input, HStack} from "@chakra-ui/react";
+import {Tr, Td, Select, Input, HStack, VStack} from "@chakra-ui/react";
 import data from "@/lib/data.json"
 
 interface TableRowProps {
@@ -10,6 +10,7 @@ interface TableRowProps {
 const TableRow: React.FC<TableRowProps> = ({ day, week, rowId }) => {
     const exerciseType = data.exerciseType;
     const intensityType = data.intensity;
+    const muscles = data.muscles;
     /*
     return (
         <Tr id={rowId + "-" + day + "-" + week}>
@@ -30,6 +31,20 @@ const TableRow: React.FC<TableRowProps> = ({ day, week, rowId }) => {
                         <option key={index} value={type}>{type}</option>
                     ))}
                 </Select>
+            </Td>
+            <Td>
+                <VStack spacing={2}>
+                    <Select id={`primaryMuscle-${rowId}-${day}-${week}`} whiteSpace="nowrap" minWidth="auto">
+                        {muscles.map((m, index) => (
+                            <option key={index} value={m}>{m}</option>
+                        ))}
+                    </Select>
+                    <Select id={`secondaryMuscle-${rowId}-${day}-${week}`} whiteSpace="nowrap" minWidth="auto">
+                        {muscles.map((m, index) => (
+                            <option key={index} value={m}>{m}</option>
+                        ))}
+                    </Select>
+                </VStack>
             </Td>
             <Td>
                 <Input name="exercise" id={"exercise-" + rowId +"-" + day + "-" + week} variant='outline' placeholder='Name' />

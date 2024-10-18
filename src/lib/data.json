@@ -14,6 +14,7 @@
   ],
   "blockHead": [
     "Type",
+    "Muscles Used",
     "Exercise",
     "Sets x Reps",
     "Intensity",
@@ -45,5 +46,22 @@
     "@9,0",
     "@9,5",
     "@10"
+  ],
+  "muscles": [
+    "None",
+    "Abdominal",
+    "Adductors",
+    "Back",
+    "Biceps",
+    "Calves",
+    "Deltoids (push)",
+    "Deltoid (pull)",
+    "Forearms",
+    "Glutes",
+    "Hamstrings",
+    "Lower Back",
+    "Pectorals",
+    "Quadriceps",
+    "Triceps"
   ]
 }
