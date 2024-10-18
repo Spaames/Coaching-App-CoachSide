@@ -20,9 +20,11 @@ interface WeekMuscleVolume {
 
 const BlockDetails: React.FC<BlockDetailsProps> = ({ block }) => {
     const [muscleVolume, setMuscleVolume] = useState<WeekMuscleVolume>();
+    const [movementVolume, setMovementVolume] = useState<{ [week: number]: { [type: string]: number } }>({});
+
     const muscleGroups = data.muscles;
 
-    const handleVolumeCalc = (exercises: Exercise[]): { [week: number]: MuscleSeries } => {
+    const calculateMuscleVolume = (exercises: Exercise[]): { [week: number]: MuscleSeries } => {
         const seriesByWeek: { [week: number]: MuscleSeries } = {};
 
         exercises.forEach(exercise => {
@@ -44,12 +46,36 @@ const BlockDetails: React.FC<BlockDetailsProps> = ({ block }) => {
                 seriesByWeek[week][exercise.secondaryMuscle] += sets * 0.5;
             }
         });
-        console.log(seriesByWeek);
         return seriesByWeek;
     };
 
+    const calculateMovementVolume = (exercises: Exercise[]): { [week: number]: { [type: string]: number } } => {
+        const setsByTypeAndWeek: { [week: number]: { [type: string]: number } } = {};
+
+        exercises.forEach(exercise => {
+            const week = exercise.week;
+            const sets = exercise.sets || 0;
+            const type = exercise.type || "Unknown";
+
+            // Initialize week and type if not already
+            if (!setsByTypeAndWeek[week]) {
+                setsByTypeAndWeek[week] = {};
+            }
+            if (!setsByTypeAndWeek[week][type]) {
+                setsByTypeAndWeek[week][type] = 0;
+            }
+
+            // Add sets to the appropriate type for the week
+            setsByTypeAndWeek[week][type] += sets;
+        });
+
+        return setsByTypeAndWeek;
+    };
+
+
     useEffect(() => {
-        setMuscleVolume(handleVolumeCalc(block.exercises));
+        setMuscleVolume(calculateMuscleVolume(block.exercises));
+        setMovementVolume(calculateMovementVolume(block.exercises));
     }, [block]);
 
     return (
