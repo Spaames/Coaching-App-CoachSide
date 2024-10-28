@@ -10,7 +10,7 @@ export async function DELETE(req: NextRequest) {
         }
 
         const mongoClient = await mongoClientPromise;
-        const db = mongoClient.db("rmManagerDev");
+        const db = mongoClient.db("rmManagerProd");
         const collection = db.collection("blocks");
 
         // Utilise `id` pour la suppression
