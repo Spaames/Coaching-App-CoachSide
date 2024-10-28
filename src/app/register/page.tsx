@@ -29,6 +29,8 @@ export default function RegisterPage() {
     const [confirmPassword, setConfirmPassword] = useState("");
     const [pin, setPin] = useState("");
     const [error, setError] = useState("");
+    const roles: string = "0";
+    const referent: string = "username";
     // Hardcoded PIN for dev purposes, will be in the env file
     const REQUIRED_PIN = "1234";
     const router = useRouter();
@@ -54,12 +56,13 @@ export default function RegisterPage() {
             const response = await fetch("/api/register", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ username, firstName, lastName, password }),
+                body: JSON.stringify({ username, firstName, lastName, password, roles, referent }),
             });
 
             const data = await response.json();
             if (response.ok) {
-                router.push("/");
+                console.log(data.message);
+                router.push("/login");
             } else {
                 setError(data.message);
             }

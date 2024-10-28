@@ -1,41 +1,94 @@
 'use client'
-import { Button, Flex, Box, Text } from "@chakra-ui/react";
-import { useRouter } from "next/navigation";
-import {useAppDispatch, useAppSelector} from "@/app/redux/hooks";
-import {logout} from "@/app/redux/features/authSlice";
+
+import {
+    Table,
+    Thead,
+    Tbody,
+    Tr,
+    Th,
+    TableContainer, Td,
+} from '@chakra-ui/react';
+import HomeAthleteRow from "@/app/components/HomeAthleteRow";
+import {useEffect, useState} from "react";
 
 export default function Page() {
-    const router = useRouter();
-    const dispatch = useAppDispatch()
 
-    const isAuth = useAppSelector((state) => state.auth);
-    console.log(isAuth);
+    interface Athlete {
+        _id: string;
+        name: string;
+        bloc: string;
+        date: string;
+        username: string;
+    }
 
-    const handleLogout = async () => {
-        try {
-            const response = await fetch("/api/logout", {
-                method: "GET",
-            });
+    const [athletes, setAthletes] = useState<Athlete[]>([]);
+    const [username, setUsername] = useState<string>("");
 
-            if (response.ok) {
-                localStorage.removeItem("user");
-                router.push("/login");
+    useEffect(() => {
+        const storedUser = localStorage.getItem('user');
+        if (storedUser) {
+            try {
+                const user = JSON.parse(storedUser).split("-");
+                if (!user || user[0] === undefined || user[0] === "") {
+                    console.error("Invalid data in localStorage");
+                } else {
+                    setUsername(user[0]);
+                    const fetchAthletes = async (username: string) => {
+                        try {
+                            const response = await fetch('/api/home', {
+                                method: "POST",
+                                headers: {
+                                    "Content-Type": "application/json",
+                                },
+                                body: JSON.stringify({username}),
+                            });
+
+                            const data = await response.json();
+                            if (response.ok && data.athleteList) {
+                                setAthletes(data.athleteList);
+                            }
+                        } catch (error) {
+                            console.log(error);
+                            setAthletes([]);
+                        }
+                    };
+                    fetchAthletes(username);
+                }
+            } catch (error) {
+                console.error(error);
             }
-        } catch (error) {
-            console.error("Error during logout:", error);
         }
-    };
+    }, [username,]);
 
     return (
-        <>
-            <Flex minHeight="100vh" align="center" justify="center" bg="gray.50">
-                <Box p={8} maxWidth="400px" borderWidth={1} borderRadius={8} boxShadow="lg" bg="white">
-                    <Text>Welcome to the home page!</Text>
-                    <Button colorScheme="red" onClick={handleLogout}>
-                        Logout
-                    </Button>
-                </Box>
-            </Flex>
-        </>
+        <TableContainer>
+            <Table variant='simple' size='lg'>
+                <Thead>
+                    <Tr>
+                        <Th>Athlete(s)</Th>
+                        <Th>Actual Block</Th>
+                        <Th>Last Update</Th>
+                        <Th>Actions</Th>
+                    </Tr>
+                </Thead>
+                <Tbody>
+                    {athletes && athletes.length > 0 ? (
+                        athletes.map((item) => (
+                            <HomeAthleteRow
+                                key={item._id}
+                                athleteName={item.name}
+                                actualBloc={item.bloc}
+                                lastUpdate={item.date}
+                                athleteLink={"/athletes/" + item.username}
+                            />
+                        ))
+                    ) : (
+                        <Tr>
+                            <Td colSpan={4}>No athletes found.</Td>
+                        </Tr>
+                    )}
+                </Tbody>
+            </Table>
+        </TableContainer>
     );
 }

@@ -4,9 +4,13 @@ import mongoClientPromise from "@/lib/mongodb";
 
 export async function POST(req: NextRequest) {
     try {
-        const { username, firstName, lastName, password } = await req.json();
-        if (!username || !password || !firstName || !lastName) {
-            return NextResponse.json({ message: "All fields are required"});
+        const { username, firstName, lastName, password, roles, referent } = await req.json();
+        console.log({ username, firstName, lastName, password, roles, referent });
+
+        if (!username || !password || !firstName || !lastName || !roles || !referent) {
+            return NextResponse.json({ message: "All fields are required" +
+                    `username=${username}, password=${password}, firstName=${firstName}, lastName=${lastName}, roles=${roles}, referent=${referent}`
+            });
         }
 
         const mongoClient = await mongoClientPromise;
@@ -20,7 +24,7 @@ export async function POST(req: NextRequest) {
 
         const hashedPass = await bcrypt.hash(password, 10);
 
-        const result = await usersCollection.insertOne({ username, firstName, lastName, password: hashedPass });
+        const result = await usersCollection.insertOne({ username, roles: Number(roles), referent, firstName, lastName, password: hashedPass });
 
         return NextResponse.json({ message: "User registered", userId: result.insertedId }, {status: 201});
     }
