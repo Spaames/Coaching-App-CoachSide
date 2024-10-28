@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
 
         const result = await collection.insertOne(block);
 
-        return NextResponse.json({ message: "Block Saved" }, {status: 200});
+        return NextResponse.json({ message: "Block Saved", result }, {status: 200});
 
     } catch (e) {
         console.log(e);

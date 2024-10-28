@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import {
     Button,
     VStack,
@@ -8,7 +8,7 @@ import {
 import Link from "next/link";
 
 import { useAppSelector, useAppDispatch } from "@/app/redux/hooks";
-import { getBlocksThunk, Intensity, Block, Exercise } from "@/app/redux/features/blockSlice";
+import { getBlocksThunk, Block } from "@/app/redux/features/blockSlice";
 
 interface ViewBlocksProps {
     athlete: string;
@@ -20,7 +20,7 @@ const ViewBlocks: React.FC<ViewBlocksProps> = ({ athlete }) => {
 
     useEffect(() => {
         dispatch(getBlocksThunk(athlete));
-    }, [athlete]);
+    }, [athlete, dispatch]);
 
     const getActualWeekNumber = (date: Date = new Date()): number => {
         const startOfYear = new Date(date.getFullYear(), 0, 1);

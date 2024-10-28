@@ -1,6 +1,5 @@
 import { NextResponse, NextRequest } from "next/server";
 import mongoClientPromise from "@/lib/mongodb";
-import {ObjectId} from "bson";
 
 export async function PUT(req: NextRequest) {
     try {

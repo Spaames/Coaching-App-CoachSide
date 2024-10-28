@@ -32,7 +32,7 @@ export interface Exercise {
 }
 
 export interface Block {
-    id: string;
+    id?: string;
     name: string;
     start?: string;
     end?: string;

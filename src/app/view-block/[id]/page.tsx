@@ -58,7 +58,7 @@ export default function Page({ params }: { params: { id: string } }) {
 
     const handleDeleteBlock = () => {
         if (block) {
-            dispatch(deleteBlockThunk(block.id));
+            dispatch(deleteBlockThunk(block.id!));
             setIsEditing(false);
             router.push('/home')
         }

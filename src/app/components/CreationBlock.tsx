@@ -200,7 +200,7 @@ const CreationBlock: React.FC<CreationBlockProps> = ({ athlete }) => {
                 </HStack>
             </Box>
             {sessions.map((session, index) => (
-                <Session key={index} sessionId={session.id} athletes={athlete} day={session.day} week={session.week} />
+                <Session key={index} day={session.day} week={session.week} />
             ))}
             <Button colorScheme="teal" onClick={handlePopUp}>Create Block</Button>
             <AlertDialog isOpen={isOpen} leastDestructiveRef={cancelRef} onClose={onClose}>
