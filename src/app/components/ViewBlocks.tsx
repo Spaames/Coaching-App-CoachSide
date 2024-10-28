@@ -39,13 +39,14 @@ const ViewBlocks: React.FC<ViewBlocksProps> = ({ athlete }) => {
         return startWeek <= currentWeek && currentWeek <= endWeek && startYear <= currentYear && currentYear <= endYear;
     }
 
-    if (blockListStore.length === 0) return null;
+    if ( blockListStore && blockListStore.length === 0) return null;
 
 
     return (
         <>
             <VStack spacing={2}>
-                {[...blockListStore].reverse().map((block, index) => (
+                {blockListStore && blockListStore.length > 0 && (
+                    [...blockListStore].reverse().map((block, index) => (
                     <Link key={index} href={`/view-block/${block.id}`} passHref>
                         <Button
                             colorScheme={isCurrentBlock(block)?"green":"gray"}
@@ -55,7 +56,7 @@ const ViewBlocks: React.FC<ViewBlocksProps> = ({ athlete }) => {
                             {block.name}
                         </Button>
                     </Link>
-                ))}
+                )))}
             </VStack>
         </>
     );

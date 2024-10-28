@@ -32,7 +32,7 @@ export interface Exercise {
 }
 
 export interface Block {
-    id?: string;
+    id: string;
     name: string;
     start?: string;
     end?: string;
@@ -65,6 +65,9 @@ const blockSlice = createSlice({
         updateBlockStart(state) {
             state.loading = true;
         },
+        deleteBlockStart(state) {
+            state.loading = true;
+        },
         createBlockSuccess(state, action: PayloadAction<Block>) {
             state.blocks.push(action.payload);
             state.loading = false;
@@ -84,6 +87,11 @@ const blockSlice = createSlice({
             state.loading = false;
             state.error = null;
         },
+        deleteBlockSuccess(state, action: PayloadAction<string>) {
+            state.blocks = state.blocks.filter(block => block.id !== action.payload);
+            state.loading = false;
+            state.error = null;
+        },
         createBlockFailure(state, action: PayloadAction<string>) {
             state.loading = false;
             state.error = action.payload;
@@ -93,6 +101,10 @@ const blockSlice = createSlice({
             state.error = action.payload;
         },
         updateBlockFailure(state, action: PayloadAction<string>) {
+            state.loading = false;
+            state.error = action.payload;
+        },
+        deleteBlockFailure(state, action: PayloadAction<string>) {
             state.loading = false;
             state.error = action.payload;
         }
@@ -109,6 +121,9 @@ export const {
     updateBlockStart,
     updateBlockSuccess,
     updateBlockFailure,
+    deleteBlockStart,
+    deleteBlockSuccess,
+    deleteBlockFailure,
 } = blockSlice.actions;
 
 export const createBlockThunk = ({ name, athlete, exercises }: { name: string; athlete: string; exercises: Exercise[] }): AppThunk => async (dispatch) => {
@@ -180,5 +195,27 @@ export const updateBlockThunk = (updatedBlock: Block): AppThunk => async (dispat
         dispatch(updateBlockFailure("Error while updating block"));
     }
 };
+
+export const deleteBlockThunk = (blockId: string): AppThunk => async (dispatch) => {
+    dispatch(deleteBlockStart());
+
+    try {
+        const response = await fetch("/api/deleteBlock", {
+            method: "DELETE",
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({id: blockId}),
+        });
+
+        const data = await response.json();
+        if (response.ok) {
+            dispatch(deleteBlockSuccess(blockId));
+            console.log(data.message);
+        } else {
+            dispatch(createBlockFailure(data.message));
+        }
+    } catch {
+        dispatch(deleteBlockFailure("Error while deleting block"));
+    }
+}
 
 export default blockSlice.reducer;

@@ -19,7 +19,6 @@ export default function Page({ params }: { params: { id: string } }) {
             <TabList>
                 <Tab>Blocks</Tab>
                 <Tab>Create Blocks</Tab>
-                <Tab>Data</Tab>
                 <Tab>Details</Tab>
             </TabList>
             <TabPanels>
@@ -30,10 +29,7 @@ export default function Page({ params }: { params: { id: string } }) {
                     <CreationBlock athlete={athlete} />
                 </TabPanel>
                 <TabPanel>
-                    <p>two!</p>
-                </TabPanel>
-                <TabPanel>
-                    <p>three!</p>
+                    <p>Information of the athlete [TO DO]</p>
                 </TabPanel>
             </TabPanels>
         </Tabs>

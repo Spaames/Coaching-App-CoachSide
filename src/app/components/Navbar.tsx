@@ -1,9 +1,10 @@
 import { Box, Button, Flex, Icon, Link, Text, useDisclosure } from "@chakra-ui/react";
-import { FaHome, FaInfoCircle, FaEnvelope, FaBars } from "react-icons/fa";
+import { FaHome, FaBars } from "react-icons/fa";
 import { useEffect, ReactNode, ElementType, FormEvent } from "react";
 import { useAppSelector, useAppDispatch } from "@/app/redux/hooks";
 import { login, logout } from "@/app/redux/features/authSlice";
 import {usePathname, useRouter} from "next/navigation";
+import {useColorMode} from "@chakra-ui/react";
 
 export default function Navbar() {
     const isAuth = useAppSelector((state) => state.auth.isAuthenticated);
@@ -12,6 +13,8 @@ export default function Navbar() {
     const router = useRouter();
     const { isOpen, onToggle } = useDisclosure();
     const path = usePathname();
+    const { colorMode, toggleColorMode } = useColorMode()
+
 
     useEffect(() => {
         const cachedUserString = localStorage.getItem("user");
@@ -69,9 +72,10 @@ export default function Navbar() {
                 <Text fontSize="2xl" mb="10" fontWeight="bold">Hello {firstName}!</Text>
                 <Flex direction="column" as="ul">
                     <NavItem icon={FaHome} href="/home">Home</NavItem>
-                    <NavItem icon={FaInfoCircle} href="/about">About</NavItem>
-                    <NavItem icon={FaEnvelope} href="/contact">Contact</NavItem>
                     <Button colorScheme="red" onClick={handleLogout}>Logout</Button>
+                    <Button onClick={toggleColorMode}>
+                        Toggle {colorMode === 'light' ? 'Dark' : 'Light'}
+                    </Button>
                 </Flex>
             </Box>
         </Box>

@@ -21,14 +21,16 @@ import {
     Tab,
     TabPanels, TabPanel
 } from "@chakra-ui/react";
-import {Block, Exercise, updateBlockThunk} from "@/app/redux/features/blockSlice";
+import {Block, deleteBlockThunk, Exercise, updateBlockThunk} from "@/app/redux/features/blockSlice";
 import data from "@/lib/data.json"
 import BlockDetails from "@/app/components/BlockDetails";
+import {useRouter} from "next/navigation";
 
 
 export default function Page({ params }: { params: { id: string } }) {
     const block = useAppSelector((state) => state.block.blocks.find(block => block.id === params.id));
     const [isEditing, setIsEditing] = useState(false);
+    const router = useRouter();
     const [editedBlock, setEditedBlock] = useState<Block>(block || {
         id: "",
         name: "",
@@ -53,6 +55,15 @@ export default function Page({ params }: { params: { id: string } }) {
             setIsEditing(false);
         }
     }
+
+    const handleDeleteBlock = () => {
+        if (block) {
+            dispatch(deleteBlockThunk(block.id));
+            setIsEditing(false);
+            router.push('/home')
+        }
+    };
+
 
     const handleInputChange = <K extends keyof Exercise>(
         e: React.ChangeEvent<HTMLInputElement>,
@@ -131,6 +142,7 @@ export default function Page({ params }: { params: { id: string } }) {
             <TabList>
                 <Tab>Block</Tab>
                 <Tab>Details</Tab>
+                <Tab>Athletes Data</Tab>
             </TabList>
             <TabPanels>
                 <TabPanel>
@@ -146,6 +158,10 @@ export default function Page({ params }: { params: { id: string } }) {
                             <Button onClick={handleSave} colorScheme="green" mb={4} ml={4}>
                                 Submit
                             </Button>
+                        )}
+
+                        {isEditing && (
+                            <Button onClick={handleDeleteBlock} colorScheme={"red"} mb={4} ml={4}>Delete Block</Button>
                         )}
 
                         <VStack spacing={8}>
@@ -297,6 +313,9 @@ export default function Page({ params }: { params: { id: string } }) {
                 <TabPanel>
                     <BlockDetails block={block} />
                 </TabPanel>
+                <TabPanels>
+                    [TO DO]
+                </TabPanels>
             </TabPanels>
         </Tabs>
 
