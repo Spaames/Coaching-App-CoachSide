@@ -1,6 +1,6 @@
 import { NextResponse, NextRequest } from "next/server";
 import mongoClientPromise from "@/lib/mongodb";
-import {ObjectId} from "bson";
+import {dbName} from "@/lib/mongodb";
 
 export async function PUT(req: NextRequest) {
     try {
@@ -12,7 +12,7 @@ export async function PUT(req: NextRequest) {
         }
 
         const mongoClient = await mongoClientPromise;
-        const db = mongoClient.db("rmManagerDev");
+        const db = mongoClient.db(dbName);
         const collection = db.collection("blocks");
 
         const filter = { id: updatedBlock.id };

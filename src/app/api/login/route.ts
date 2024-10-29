@@ -2,6 +2,7 @@ import { NextRequest, NextResponse} from "next/server";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import mongoClientPromise from "@/lib/mongodb";
+import {dbName} from "@/lib/mongodb";
 
 export async function POST(req: NextRequest) {
     try {
@@ -10,7 +11,7 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ message: "Username and password required"});
         }
         const mongoClient = await mongoClientPromise;
-        const db = mongoClient.db("rmManagerDev");
+        const db = mongoClient.db(dbName);
         const usersCollection = db.collection("users");
 
         const existingUser = await usersCollection.findOne({ username });

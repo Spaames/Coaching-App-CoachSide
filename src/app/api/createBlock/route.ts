@@ -1,5 +1,6 @@
 import { NextResponse, NextRequest } from "next/server";
 import mongoClientPromise from "@/lib/mongodb";
+import {dbName} from "@/lib/mongodb";
 
 export async function POST(req: NextRequest) {
     try {
@@ -10,12 +11,12 @@ export async function POST(req: NextRequest) {
         }
 
         const mongoClient = await mongoClientPromise;
-        const db = mongoClient.db("rmManagerDev");
+        const db = mongoClient.db(dbName);
         const collection = db.collection("blocks");
 
         const result = await collection.insertOne(block);
 
-        return NextResponse.json({ message: "Block Saved" }, {status: 200});
+        return NextResponse.json({ message: "Block Saved", result }, {status: 200});
 
     } catch (e) {
         console.log(e);
