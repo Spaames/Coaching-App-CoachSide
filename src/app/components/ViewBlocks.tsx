@@ -20,7 +20,7 @@ const ViewBlocks: React.FC<ViewBlocksProps> = ({ athlete }) => {
 
     useEffect(() => {
         dispatch(getBlocksThunk(athlete));
-    }, [athlete]);
+    }, [athlete, dispatch]);
 
     const getActualWeekNumber = (date: Date = new Date()): number => {
         const startOfYear = new Date(date.getFullYear(), 0, 1);

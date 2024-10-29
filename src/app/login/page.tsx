@@ -84,7 +84,7 @@ export default function Page() {
                     </Stack>
                 </form>
                 <Text mt={4} textAlign="center">
-                    Don't have an account?{" "}
+                    Dont have an account?{" "}
                     <Link as={NextLink} href="/register" color="teal.500" fontWeight="bold">
                         Sign up instead
                     </Link>

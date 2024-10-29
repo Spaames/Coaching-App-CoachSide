@@ -15,13 +15,11 @@ import data from "@/lib/data.json";
 import TableRow from "@/app/components/block/TableRow";
 
 interface SessionProps {
-    athletes: string;
-    sessionId: number;
     day: number;
     week: number;
 }
 
-const Session: React.FC<SessionProps> = ({ athletes, sessionId, day, week }) => {
+const Session: React.FC<SessionProps> = ({ day, week }) => {
     const columns = data.blockHead;
     //const [selectedColumns, setSelectedColumns] = useState<string[]>(columns.map(() => ''));
     const [rows, setRows] = useState<number[]>([]);
