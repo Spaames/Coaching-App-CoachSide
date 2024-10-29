@@ -22,7 +22,7 @@ import {
 import Session from "@/app/components/block/Session";
 import {useAppDispatch} from "@/app/redux/hooks";
 import {createBlockThunk} from "@/app/redux/features/blockSlice";
-import { Intensity, Exercise, Block } from "@/app/redux/features/blockSlice"
+import { Exercise, Block } from "@/app/redux/features/blockSlice"
 
 interface CreationBlockProps {
     athlete: string;
@@ -62,21 +62,6 @@ const CreationBlock: React.FC<CreationBlockProps> = ({ athlete }) => {
         const weeks = getNumberOfWeeks();
         const newSession = sessions.slice(0, -weeks);
         setSessions(newSession);
-    }
-
-    const getIntensity = (rowId: string, day: string, week: string): Intensity | null => {
-        const typeElement = document.getElementById("intensityType-" + rowId + "-" + day + "-" + week) as HTMLSelectElement | null;
-        const valueElement = document.getElementById("intensityValue-" + rowId + "-" + day + "-" + week) as HTMLInputElement | null;
-
-        if (typeElement && valueElement) {
-            return {
-                type: typeElement.value,
-                value: parseInt(valueElement.value)
-            };
-        } else {
-            return null;
-        }
-
     }
 
     const handleCreationExercises = (): Exercise[] => {
@@ -127,9 +112,8 @@ const CreationBlock: React.FC<CreationBlockProps> = ({ athlete }) => {
                     case "instructions":
                         exercise.instructions = value;
                         break;
-                    case "intensityType":
-                    case "intensityValue":
-                        exercise.intensity = getIntensity(order, day, week);
+                    case "intensity":
+                        exercise.intensity = value;
                         break;
                     default:
                         break;

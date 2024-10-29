@@ -106,7 +106,7 @@ export default function Page({ params }: { params: { id: string } }) {
             indicatedLoad: "",
             primaryMuscle: muscles[0],
             secondaryMuscle: muscles[0],
-            intensity: { type: 'RPE', value: 0 },
+            intensity: "",
             realPerf: null,
             rest: '',
             instructions: '',
@@ -254,14 +254,12 @@ export default function Page({ params }: { params: { id: string } }) {
                                                                         />
                                                                     </Td>
                                                                     <Td>
-                                                                        <Select
-                                                                            defaultValue={exercise.intensity?.type || ""}
+                                                                        <Input
+                                                                            defaultValue={exercise.intensity || ""}
                                                                             isReadOnly={!isEditing}
-                                                                            onChange={(e) => handleSelectChange(e, exerciseIndex, "intensity")}
-                                                                        >
-                                                                            <option value="RPE">RPE</option>
-                                                                            <option value="RIR">RIR</option>
-                                                                        </Select>
+                                                                            onChange={(e) => handleInputChange(e, exerciseIndex, "intensity")}
+                                                                            placeholder="Intensity"
+                                                                        />
                                                                     </Td>
                                                                     <Td>
                                                                         <Input

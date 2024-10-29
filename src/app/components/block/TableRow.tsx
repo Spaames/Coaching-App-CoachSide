@@ -9,7 +9,6 @@ interface TableRowProps {
 
 const TableRow: React.FC<TableRowProps> = ({ day, week, rowId }) => {
     const exerciseType = data.exerciseType;
-    const intensityType = data.intensity;
     const muscles = data.muscles;
     /*
     return (
@@ -57,14 +56,7 @@ const TableRow: React.FC<TableRowProps> = ({ day, week, rowId }) => {
                 </HStack>
             </Td>
             <Td>
-                <HStack spacing={2}>
-                    <Select id={"intensityType-" + rowId +"-" + day + "-" + week} whiteSpace="nowrap" minWidth="auto">
-                        {intensityType.map((type, index) => (
-                            <option key={index} value={type}>{type}</option>
-                        ))}
-                    </Select>
-                    <Input name="intensityValue" id={"intensityValue-" + rowId +"-" + day + "-" + week} maxW={20} variant='outline' placeholder='Intensity' />
-                </HStack>
+                <Input name="intensity" id={"intensity-" + rowId +"-" + day + "-" + week} maxW={20} variant='outline' placeholder='Intensity' />
             </Td>
             <Td>
                 <Input name="load" id={"load-" + rowId +"-" + day + "-" + week} maxW={20} variant='outline' placeholder='Load' />
