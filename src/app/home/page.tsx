@@ -66,8 +66,6 @@ export default function Page() {
                 <Thead>
                     <Tr>
                         <Th>Athlete(s)</Th>
-                        <Th>Actual Block</Th>
-                        <Th>Last Update</Th>
                         <Th>Actions</Th>
                     </Tr>
                 </Thead>
@@ -77,8 +75,6 @@ export default function Page() {
                             <HomeAthleteRow
                                 key={item._id}
                                 athleteName={item.name}
-                                actualBloc={item.bloc}
-                                lastUpdate={item.date}
                                 athleteLink={"/athletes/" + item.username}
                             />
                         ))

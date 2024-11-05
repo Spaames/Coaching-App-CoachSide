@@ -8,17 +8,13 @@ import { FaEdit } from "react-icons/fa";
 
 interface HomeAthleteRowProps {
     athleteName: string,
-    actualBloc : string,
-    lastUpdate: string,
     athleteLink: string,
 }
 
-const HomeAthleteRow: React.FC<HomeAthleteRowProps> = ({ athleteName, actualBloc, lastUpdate, athleteLink }) => {
+const HomeAthleteRow: React.FC<HomeAthleteRowProps> = ({ athleteName, athleteLink }) => {
     return (
         <Tr>
             <Td>{athleteName}</Td>
-            <Td>{actualBloc}</Td>
-            <Td>{lastUpdate}</Td>
             <Td>
                 <Link href={athleteLink}>
                     <Flex>
