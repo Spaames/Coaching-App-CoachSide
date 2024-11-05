@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from 'react';
-import {useAppDispatch, useAppSelector} from "@/app/redux/hooks";
+import { useAppDispatch, useAppSelector } from "@/app/redux/hooks";
 import {
     Table,
     Thead,
@@ -21,11 +21,10 @@ import {
     Tab,
     TabPanels, TabPanel
 } from "@chakra-ui/react";
-import {Block, deleteBlockThunk, Exercise, updateBlockThunk} from "@/app/redux/features/blockSlice";
-import data from "@/lib/data.json"
+import { Block, deleteBlockThunk, Exercise, updateBlockThunk } from "@/app/redux/features/blockSlice";
+import data from "@/lib/data.json";
 import BlockDetails from "@/app/components/BlockDetails";
-import {useRouter} from "next/navigation";
-
+import { useRouter } from "next/navigation";
 
 export default function Page({ params }: { params: { id: string } }) {
     const block = useAppSelector((state) => state.block.blocks.find(block => block.id === params.id));
@@ -42,12 +41,9 @@ export default function Page({ params }: { params: { id: string } }) {
 
     const exerciseType = data.exerciseType;
     const muscles = data.muscles;
-
     const dispatch = useAppDispatch();
 
-    const handleEdit = () => {
-        setIsEditing(!isEditing);
-    }
+    const handleEdit = () => setIsEditing(!isEditing);
 
     const handleSave = () => {
         if (editedBlock) {
@@ -58,46 +54,47 @@ export default function Page({ params }: { params: { id: string } }) {
 
     const handleDeleteBlock = () => {
         if (block) {
-            dispatch(deleteBlockThunk(block.id));
+            dispatch(deleteBlockThunk(block.id!));
             setIsEditing(false);
-            router.push('/home')
+            router.push('/home');
         }
     };
 
-
     const handleInputChange = <K extends keyof Exercise>(
         e: React.ChangeEvent<HTMLInputElement>,
-        exerciseIndex: number,
+        day: number,
+        week: number,
+        order: number,
         field: K
     ) => {
-        const newExercises = [...editedBlock.exercises];
-        const updatedExercise = { ...newExercises[exerciseIndex] };
+        const newExercises = editedBlock.exercises.map((exercise) =>
+            exercise.day === day && exercise.week === week && exercise.order === order
+                ? { ...exercise, [field]: field === "sets" || field === "indicatedLoad" ? parseInt(e.target.value, 10) : e.target.value }
+                : exercise
+        );
 
-        if (field === "sets" || field === "indicatedReps" || field === "indicatedLoad") {
-            updatedExercise[field] = parseInt(e.target.value, 10) as Exercise[K];
-        } else {
-            updatedExercise[field] = e.target.value as Exercise[K];
-        }
-
-        newExercises[exerciseIndex] = updatedExercise;
         setEditedBlock({ ...editedBlock, exercises: newExercises });
     };
 
     const handleSelectChange = <K extends keyof Exercise>(
         e: React.ChangeEvent<HTMLSelectElement>,
-        exerciseIndex: number,
+        day: number,
+        week: number,
+        order: number,
         field: K
     ) => {
-        const newExercises = [...editedBlock.exercises];
-        const updatedExercise = { ...newExercises[exerciseIndex] };
-
-        updatedExercise[field] = e.target.value as Exercise[K];
-        newExercises[exerciseIndex] = updatedExercise;
+        const newExercises = editedBlock.exercises.map((exercise) =>
+            exercise.day === day && exercise.week === week && exercise.order === order
+                ? { ...exercise, [field]: e.target.value as Exercise[K] }
+                : exercise
+        );
 
         setEditedBlock({ ...editedBlock, exercises: newExercises });
     };
 
     const handleAddExercise = (week: number, day: number) => {
+        const newOrder = editedBlock.exercises
+            .filter(ex => ex.week === week && ex.day === day).length + 1;
         const newExercise: Exercise = {
             name: '',
             type: exerciseType[0],
@@ -112,7 +109,7 @@ export default function Page({ params }: { params: { id: string } }) {
             instructions: '',
             week,
             day,
-            order: editedBlock.exercises.length + 1  // Positionner le nouvel exercice à la fin
+            order: newOrder
         };
 
         setEditedBlock({
@@ -121,20 +118,19 @@ export default function Page({ params }: { params: { id: string } }) {
         });
     };
 
-    const handleDeleteExercise = (exerciseIndex: number) => {
-        const newExercises = editedBlock.exercises.filter((_, index) => index !== exerciseIndex);
+    const handleDeleteExercise = (day: number, week: number, order: number) => {
+        const newExercises = editedBlock.exercises
+            .filter(exercise => !(exercise.day === day && exercise.week === week && exercise.order === order))
+            .map((exercise, index) => ({ ...exercise, order: index + 1 }));
+
         setEditedBlock({ ...editedBlock, exercises: newExercises });
     };
 
-    if (!block) {
-        return <p>Block not found</p>;
-    }
+    if (!block) return <p>Block not found</p>;
 
     const weeks = Array.from(new Set((isEditing ? editedBlock : block).exercises.map(ex => ex.week))).sort((a, b) => a - b);
-
     const startWeek = weeks[0];
     const endWeek = weeks[weeks.length - 1];
-
     const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
     return (
@@ -153,13 +149,11 @@ export default function Page({ params }: { params: { id: string } }) {
                         <Button onClick={handleEdit} colorScheme="blue" mb={4}>
                             {isEditing ? "Cancel" : "Modify"}
                         </Button>
-
                         {isEditing && (
                             <Button onClick={handleSave} colorScheme="green" mb={4} ml={4}>
                                 Submit
                             </Button>
                         )}
-
                         {isEditing && (
                             <Button onClick={handleDeleteBlock} colorScheme={"red"} mb={4} ml={4}>Delete Block</Button>
                         )}
@@ -168,7 +162,6 @@ export default function Page({ params }: { params: { id: string } }) {
                             {weeks.map((week, index) => (
                                 <Box key={week} w="100%">
                                     <Heading size="md" mb={4}>Week {index + 1}</Heading>
-
                                     {Array.from({ length: 7 }, (_, dayIndex) => {
                                         const dayExercises = (isEditing ? editedBlock : block).exercises
                                             .filter(ex => ex.week === week && ex.day === dayIndex + 1)
@@ -196,14 +189,13 @@ export default function Page({ params }: { params: { id: string } }) {
                                                             </Tr>
                                                         </Thead>
                                                         <Tbody>
-                                                            {dayExercises.map((exercise, exerciseIndex) => (
-                                                                <Tr key={exerciseIndex}>
+                                                            {dayExercises.map((exercise) => (
+                                                                <Tr key={`${exercise.week}-${exercise.day}-${exercise.order}`}>
                                                                     <Td>
                                                                         <Select
                                                                             defaultValue={exercise.type}
-                                                                            name="type"
                                                                             isReadOnly={!isEditing}
-                                                                            onChange={(e) => handleSelectChange(e, exerciseIndex, "type")}
+                                                                            onChange={(e) => handleSelectChange(e, exercise.day, exercise.week, exercise.order, "type")}
                                                                         >
                                                                             {exerciseType.map((type, index) => (
                                                                                 <option key={index} value={type}>{type}</option>
@@ -214,7 +206,7 @@ export default function Page({ params }: { params: { id: string } }) {
                                                                         <Input
                                                                             defaultValue={exercise.name}
                                                                             isReadOnly={!isEditing}
-                                                                            onChange={(e) => handleInputChange(e, exerciseIndex, "name")}
+                                                                            onChange={(e) => handleInputChange(e, exercise.day, exercise.week, exercise.order, "name")}
                                                                         />
                                                                     </Td>
                                                                     <Td>
@@ -222,7 +214,7 @@ export default function Page({ params }: { params: { id: string } }) {
                                                                             <Select
                                                                                 defaultValue={exercise.primaryMuscle}
                                                                                 isReadOnly={!isEditing}
-                                                                                onChange={(e) => handleSelectChange(e, exerciseIndex, "primaryMuscle")}
+                                                                                onChange={(e) => handleSelectChange(e, exercise.day, exercise.week, exercise.order, "primaryMuscle")}
                                                                             >
                                                                                 {muscles.map((m, index) => (
                                                                                     <option key={index} value={m}>{m}</option>
@@ -231,7 +223,7 @@ export default function Page({ params }: { params: { id: string } }) {
                                                                             <Select
                                                                                 defaultValue={exercise.secondaryMuscle}
                                                                                 isReadOnly={!isEditing}
-                                                                                onChange={(e) => handleSelectChange(e, exerciseIndex, "secondaryMuscle")}
+                                                                                onChange={(e) => handleSelectChange(e, exercise.day, exercise.week, exercise.order, "secondaryMuscle")}
                                                                             >
                                                                                 {muscles.map((m, index) => (
                                                                                     <option key={index} value={m}>{m}</option>
@@ -241,50 +233,49 @@ export default function Page({ params }: { params: { id: string } }) {
                                                                     </Td>
                                                                     <Td>
                                                                         <Input
-                                                                            defaultValue={exercise.sets?.toString() || "N/A"}
+                                                                            defaultValue={exercise.sets?.toString() || ""}
                                                                             isReadOnly={!isEditing}
-                                                                            onChange={(e) => handleInputChange(e, exerciseIndex, "sets")}
+                                                                            onChange={(e) => handleInputChange(e, exercise.day, exercise.week, exercise.order, "sets")}
                                                                         />
                                                                     </Td>
                                                                     <Td>
                                                                         <Input
                                                                             defaultValue={exercise.indicatedReps?.toString() || ""}
                                                                             isReadOnly={!isEditing}
-                                                                            onChange={(e) => handleInputChange(e, exerciseIndex, "indicatedReps")}
+                                                                            onChange={(e) => handleInputChange(e, exercise.day, exercise.week, exercise.order, "indicatedReps")}
                                                                         />
                                                                     </Td>
                                                                     <Td>
                                                                         <Input
-                                                                            defaultValue={exercise.intensity || ""}
+                                                                            defaultValue={exercise.intensity?.toString() || ""}
                                                                             isReadOnly={!isEditing}
-                                                                            onChange={(e) => handleInputChange(e, exerciseIndex, "intensity")}
-                                                                            placeholder="Intensity"
+                                                                            onChange={(e) => handleInputChange(e, exercise.day, exercise.week, exercise.order, "intensity")}
                                                                         />
                                                                     </Td>
                                                                     <Td>
                                                                         <Input
-                                                                            defaultValue={exercise.indicatedLoad?.toString() || "N/A"}
+                                                                            defaultValue={exercise.indicatedLoad?.toString() || ""}
                                                                             isReadOnly={!isEditing}
-                                                                            onChange={(e) => handleInputChange(e, exerciseIndex, "indicatedLoad")}
+                                                                            onChange={(e) => handleInputChange(e, exercise.day, exercise.week, exercise.order, "indicatedLoad")}
                                                                         />
                                                                     </Td>
                                                                     <Td>
                                                                         <Input
-                                                                            defaultValue={exercise.rest}
+                                                                            defaultValue={exercise.rest || ""}
                                                                             isReadOnly={!isEditing}
-                                                                            onChange={(e) => handleInputChange(e, exerciseIndex, "rest")}
+                                                                            onChange={(e) => handleInputChange(e, exercise.day, exercise.week, exercise.order, "rest")}
                                                                         />
                                                                     </Td>
                                                                     <Td>
                                                                         <Input
-                                                                            defaultValue={exercise.instructions}
+                                                                            defaultValue={exercise.instructions || ""}
                                                                             isReadOnly={!isEditing}
-                                                                            onChange={(e) => handleInputChange(e, exerciseIndex, "instructions")}
+                                                                            onChange={(e) => handleInputChange(e, exercise.day, exercise.week, exercise.order, "instructions")}
                                                                         />
                                                                     </Td>
                                                                     {isEditing && (
                                                                         <Td>
-                                                                            <Button colorScheme="red" onClick={() => handleDeleteExercise(exerciseIndex)}>
+                                                                            <Button colorScheme="red" onClick={() => handleDeleteExercise(exercise.day, exercise.week, exercise.order)}>
                                                                                 Remove Exercise
                                                                             </Button>
                                                                         </Td>
@@ -294,7 +285,6 @@ export default function Page({ params }: { params: { id: string } }) {
                                                         </Tbody>
                                                     </Table>
                                                 </TableContainer>
-
                                                 {isEditing && (
                                                     <Button onClick={() => handleAddExercise(week, dayIndex + 1)} colorScheme="blue">
                                                         Add exercise
@@ -316,7 +306,5 @@ export default function Page({ params }: { params: { id: string } }) {
                 </TabPanels>
             </TabPanels>
         </Tabs>
-
-
     );
 };
